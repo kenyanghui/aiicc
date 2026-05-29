@@ -1,0 +1,12 @@
+.claude/
+__pycache__/
+*.pyc
+node_modules/
+.env
+.next/
+venv/
+.venv/
+dist/
+build/
+*.log
+*.db
