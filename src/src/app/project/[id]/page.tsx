@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { workflowPhases, getStep } from '@/lib/workflow';
 import WorkflowSidebar from '@/components/WorkflowSidebar';
 import ChatPanel from '@/components/ChatPanel';
+import MethodologyCard from '@/components/MethodologyCard';
 
 export default function ProjectPage() {
   const params = useParams();
@@ -138,19 +139,22 @@ export default function ProjectPage() {
             </div>
 
             {/* 导航按钮 */}
-            <div className="mt-auto flex gap-2">
-              <button
-                onClick={goPrev}
-                className="flex-1 rounded-lg border border-slate-600 py-2 text-xs text-slate-400 transition hover:border-slate-500 hover:text-white"
-              >
-                ← 上一步
-              </button>
-              <button
-                onClick={goNext}
-                className="flex-1 rounded-lg bg-cyan-500 py-2 text-xs font-medium text-white transition hover:bg-cyan-400"
-              >
-                下一步 →
-              </button>
+            <div className="mt-auto space-y-3">
+              <MethodologyCard phaseId={currentPhase} />
+              <div className="flex gap-2">
+                <button
+                  onClick={goPrev}
+                  className="flex-1 rounded-lg border border-slate-600 py-2 text-xs text-slate-400 transition hover:border-slate-500 hover:text-white"
+                >
+                  ← 上一步
+                </button>
+                <button
+                  onClick={goNext}
+                  className="flex-1 rounded-lg bg-cyan-500 py-2 text-xs font-medium text-white transition hover:bg-cyan-400"
+                >
+                  下一步 →
+                </button>
+              </div>
             </div>
           </div>
 
