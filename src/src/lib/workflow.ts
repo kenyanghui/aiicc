@@ -1,0 +1,261 @@
+import { WorkflowPhase } from '@/types';
+
+// ============================================================
+// AIICC 五阶段工作流定义
+// ============================================================
+
+export const workflowPhases: WorkflowPhase[] = [
+  {
+    id: 1,
+    name: '发现',
+    icon: '🔍',
+    description: '探索问题、对齐 SDG、理解用户',
+    steps: [
+      {
+        id: '1-1',
+        phase: 1,
+        step: 1,
+        title: '破冰 — 你想解决什么？',
+        description: '说出你最想解决的一个社会问题或生活中的不便',
+        aiRole: 'socrates',
+        outputType: 'text',
+        promptHint: '引导学员说出想解决的问题，用提问帮助聚焦',
+      },
+      {
+        id: '1-2',
+        phase: 1,
+        step: 2,
+        title: '问题深挖 — 5个为什么',
+        description: '连续问 5 次"为什么"，找到问题的根本原因',
+        aiRole: 'socrates',
+        outputType: 'text',
+        promptHint: '用 5Why 方法引导学员逐层深入，不要跳步骤',
+      },
+      {
+        id: '1-3',
+        phase: 1,
+        step: 3,
+        title: 'SDG 对齐',
+        description: '你的问题与哪个联合国可持续发展目标相关？',
+        aiRole: 'analyst',
+        outputType: 'text',
+        promptHint: '帮助学员将问题映射到 SDG 目标，给出匹配理由',
+      },
+      {
+        id: '1-4',
+        phase: 1,
+        step: 4,
+        title: '用户画像',
+        description: '谁最受这个问题困扰？描述他们的样子',
+        aiRole: 'analyst',
+        outputType: 'text',
+        promptHint: '帮助学员构建用户画像：年龄、场景、痛点、需求',
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: '定义',
+    icon: '🎯',
+    description: '价值主张、竞品分析、立项',
+    steps: [
+      {
+        id: '2-1',
+        phase: 2,
+        step: 1,
+        title: '价值主张',
+        description: '你的方案为用户创造什么独特的价值？',
+        aiRole: 'analyst',
+        outputType: 'canvas',
+        promptHint: '引导学员完成价值画布：用户痛点→解决方案→价值主张',
+      },
+      {
+        id: '2-2',
+        phase: 2,
+        step: 2,
+        title: '竞品分析',
+        description: '别人是怎么解决这个问题的？你的不同在哪？',
+        aiRole: 'analyst',
+        outputType: 'text',
+        promptHint: '帮助学员找到 2-3 个竞品或类似方案，分析优劣势',
+      },
+      {
+        id: '2-3',
+        phase: 2,
+        step: 3,
+        title: '创新定位',
+        description: '用一句话说清楚：你的方案为什么值得存在',
+        aiRole: 'analyst',
+        outputType: 'text',
+        promptHint: '引导学员写出独特的价值声明 USP',
+      },
+      {
+        id: '2-4',
+        phase: 2,
+        step: 4,
+        title: '项目立项',
+        description: '给你的项目起个名字，写一段简介',
+        aiRole: 'analyst',
+        outputType: 'text',
+        promptHint: '帮助学员完成项目命名、简介和目标陈述',
+      },
+    ],
+  },
+  {
+    id: 3,
+    name: '构思',
+    icon: '💡',
+    description: '头脑风暴、创意筛选、方案细化',
+    steps: [
+      {
+        id: '3-1',
+        phase: 3,
+        step: 1,
+        title: '头脑风暴',
+        description: '天马行空！想出至少 10 个可能的解决方案',
+        aiRole: 'creative',
+        outputType: 'list',
+        promptHint: '鼓励发散思维，先不评判，数量优先，至少 10 个',
+      },
+      {
+        id: '3-2',
+        phase: 3,
+        step: 2,
+        title: '创意筛选',
+        description: '从 10 个创意里选出最可行的 2-3 个',
+        aiRole: 'creative',
+        outputType: 'text',
+        promptHint: '帮学员建立筛选标准：可行性、影响力、创新性',
+      },
+      {
+        id: '3-3',
+        phase: 3,
+        step: 3,
+        title: '方案细化',
+        description: '把选中的创意变成一个具体的方案描述',
+        aiRole: 'creative',
+        outputType: 'text',
+        promptHint: '引导学员描述方案的核心功能、使用场景、目标用户',
+      },
+      {
+        id: '3-4',
+        phase: 3,
+        step: 4,
+        title: '创新性检查',
+        description: '你的方案够新吗？和已有方案比进步在哪？',
+        aiRole: 'reviewer',
+        outputType: 'text',
+        promptHint: '从新颖性、实用性、社会价值三个维度评估创新性',
+      },
+    ],
+  },
+  {
+    id: 4,
+    name: '原型',
+    icon: '🛠️',
+    description: 'MVP 定义、原型设计、技术方案',
+    steps: [
+      {
+        id: '4-1',
+        phase: 4,
+        step: 1,
+        title: 'MVP 定义',
+        description: '最少需要做什么，才能验证你的方案？',
+        aiRole: 'architect',
+        outputType: 'text',
+        promptHint: '帮助学员定义最小可行产品范围，克制地做减法',
+      },
+      {
+        id: '4-2',
+        phase: 4,
+        step: 2,
+        title: '原型设计',
+        description: '画出你的产品长什么样（纸笔/工具）',
+        aiRole: 'architect',
+        outputType: 'text',
+        promptHint: '引导学员描述产品界面和用户体验流程',
+      },
+      {
+        id: '4-3',
+        phase: 4,
+        step: 3,
+        title: '技术方案',
+        description: '需要用哪些技术来搭建你的产品？',
+        aiRole: 'architect',
+        outputType: 'text',
+        promptHint: '帮助学员选择合适的技术栈，考虑学员的实际能力',
+      },
+      {
+        id: '4-4',
+        phase: 4,
+        step: 4,
+        title: '验证清单',
+        description: '怎么知道你的方案是对的？列出验证方法',
+        aiRole: 'architect',
+        outputType: 'list',
+        promptHint: '帮助学员设计验证实验：用户访谈、小范围测试等',
+      },
+    ],
+  },
+  {
+    id: 5,
+    name: '交付',
+    icon: '🚀',
+    description: '实现辅导、质量审查、展示准备',
+    steps: [
+      {
+        id: '5-1',
+        phase: 5,
+        step: 1,
+        title: '实现辅导',
+        description: '开始搭建你的产品，遇到问题随时问',
+        aiRole: 'architect',
+        outputType: 'text',
+        promptHint: '提供实现建议和资源推荐，鼓励自主探索',
+      },
+      {
+        id: '5-2',
+        phase: 5,
+        step: 2,
+        title: '质量审查',
+        description: '检查一下：你的方案还有哪些可以改进的地方？',
+        aiRole: 'reviewer',
+        outputType: 'text',
+        promptHint: '从完整性、一致性、可用性三个角度审查',
+      },
+      {
+        id: '5-3',
+        phase: 5,
+        step: 3,
+        title: '展示准备',
+        description: '怎么向评委介绍你的项目？准备你的故事',
+        aiRole: 'reviewer',
+        outputType: 'text',
+        promptHint: '引导学员准备电梯演讲：问题→方案→影响',
+      },
+      {
+        id: '5-4',
+        phase: 5,
+        step: 4,
+        title: '提交清单',
+        description: '最后一轮检查：所有材料都准备好了吗？',
+        aiRole: 'reviewer',
+        outputType: 'list',
+        promptHint: '逐项检查提交材料：方案描述、原型、展示材料等',
+      },
+    ],
+  },
+];
+
+export function getPhase(phaseId: number): WorkflowPhase | undefined {
+  return workflowPhases.find(p => p.id === phaseId);
+}
+
+export function getStep(phaseId: number, step: number) {
+  const phase = getPhase(phaseId);
+  return phase?.steps.find(s => s.step === step);
+}
+
+export function totalSteps(): number {
+  return workflowPhases.reduce((acc, p) => acc + p.steps.length, 0);
+}
