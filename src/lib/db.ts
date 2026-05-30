@@ -1,10 +1,10 @@
 // ============================================================
-// AIICC 通用数据库接口
-// 本地开发: Prisma + SQLite（持久化写入文件）
-// Netlify Lambda: 内存存储（热期间持续，冷启动后重置）
+// AIICC 数据存储层
+// 使用内存 Map 存储（兼容 Netlify Lambda 无持久化环境）
+// 数据在 Lambda 热期间持续，冷启动后重置
 // ============================================================
 
-// ---------- 内存存储层 ----------
+// ===== 内存存储 =====
 
 class MemoryStore {
   phaseOutputs = new Map<string, any>();
@@ -12,8 +12,8 @@ class MemoryStore {
   documents = new Map<string, any>();
 
   // === PhaseOutput ===
-  getOutputs(projectId: string, phase?: number, step?: number) {
-    return Array.from(this.phaseOutputs.values()).filter(o => {
+  getOutputs(projectId: string, phase?: number, step?: number): any[] {
+    return Array.from(this.phaseOutputs.values()).filter((o: any) => {
       if (o.projectId !== projectId) return false;
       if (phase !== undefined && o.phase !== phase) return false;
       if (step !== undefined && o.step !== step) return false;
@@ -21,7 +21,7 @@ class MemoryStore {
     });
   }
 
-  upsertOutput(projectId: string, phase: number, step: number, outputType: string, content: string, aiRoleUsed: string) {
+  upsertOutput(projectId: string, phase: number, step: number, outputType: string, content: string, aiRoleUsed: string): any {
     const key = `${projectId}-${phase}-${step}`;
     const existing = this.phaseOutputs.get(key);
     if (existing) {
@@ -30,7 +30,7 @@ class MemoryStore {
       return updated;
     }
     const created = {
-      id: `mem-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      id: `out-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
       projectId, phase, step, outputType, content, aiRoleUsed,
       createdAt: new Date().toISOString(),
     };
@@ -39,33 +39,38 @@ class MemoryStore {
   }
 
   // === ChatMessage ===
-  getMessages(projectId: string, phase?: number, step?: number) {
+  getMessages(projectId: string, phase?: number, step?: number): any[] {
     const msgs = this.chatMessages.get(projectId) || [];
-    return msgs.filter(m => {
+    return msgs.filter((m: any) => {
       if (phase !== undefined && m.phase !== phase) return false;
       if (step !== undefined && m.step !== step) return false;
       return true;
-    }).sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    }).sort((a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
   }
 
-  addMessage(msg: any) {
-    const list = this.chatMessages.get(msg.projectId) || [];
-    const newMsg = { ...msg, id: msg.id || `mem-${Date.now()}`, createdAt: new Date().toISOString() };
-    this.chatMessages.set(msg.projectId, [...list, newMsg]);
+  addMessage(projectId: string, phase: number, step: number, role: string, content: string, aiRole?: string | null): any {
+    const list = this.chatMessages.get(projectId) || [];
+    const newMsg: any = {
+      id: `msg-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      projectId, phase, step, role, content,
+      aiRole: aiRole || null,
+      createdAt: new Date().toISOString(),
+    };
+    this.chatMessages.set(projectId, [...list, newMsg]);
     return newMsg;
   }
 
   // === Document ===
-  getDocuments(projectId: string) {
-    return Array.from(this.documents.values()).filter(d => d.projectId === projectId);
+  getDocuments(projectId: string): any[] {
+    return Array.from(this.documents.values()).filter((d: any) => d.projectId === projectId);
   }
 
-  getDocument(id: string) {
+  getDocument(id: string): any {
     for (const [, val] of this.documents) if (val.id === id) return val;
     return null;
   }
 
-  upsertDocument(projectId: string, docType: string, title: string, content: string) {
+  upsertDocument(projectId: string, docType: string, title: string, content: string): any {
     const key = `${projectId}-${docType}`;
     const existing = this.documents.get(key);
     const now = new Date().toISOString();
@@ -74,7 +79,7 @@ class MemoryStore {
       this.documents.set(key, updated);
       return updated;
     }
-    const created = {
+    const created: any = {
       id: `doc-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
       projectId, docType, title, content, status: 'draft',
       createdAt: now, updatedAt: now,
@@ -83,14 +88,14 @@ class MemoryStore {
     return created;
   }
 
-  updateDocumentStatus(id: string, status: string) {
+  updateDocumentStatus(id: string, status: string): any {
     for (const [, val] of this.documents) {
       if (val.id === id) { val.status = status; val.updatedAt = new Date().toISOString(); return val; }
     }
     return null;
   }
 
-  deleteDocument(id: string) {
+  deleteDocument(id: string): boolean {
     for (const [key, val] of this.documents) {
       if (val.id === id) { this.documents.delete(key); return true; }
     }
@@ -98,155 +103,57 @@ class MemoryStore {
   }
 }
 
-// ---------- 全局单例 ----------
+// ===== 全局单例 =====
 
-const globalForDb = globalThis as unknown as {
-  __memStore: MemoryStore;
-  __prisma: any;
-  __dbAvailable: boolean;
-};
-
+const globalForDb = globalThis as unknown as { __memStore: MemoryStore };
 if (!globalForDb.__memStore) globalForDb.__memStore = new MemoryStore();
-
-// 尝试初始化 Prisma（可能失败）
-let prisma: any = null;
-let prismaAvailable = false;
-
-try {
-  // 动态导入避免在 import 阶段崩溃
-  const { PrismaClient } = require('@prisma/client');
-  prisma = globalForDb.__prisma ?? new PrismaClient();
-  globalForDb.__prisma = prisma;
-  prismaAvailable = true;
-} catch (e) {
-  console.warn('[DB] SQLite/Prisma not available, using memory store.');
-  prismaAvailable = false;
-}
-
 const mem = globalForDb.__memStore;
 
-// ---------- 统一导出 API ----------
+// ===== 统一导出 API =====
+
+type OutputItem = { projectId: string; phase: number; step: number; outputType: string; content: string; aiRoleUsed: string; [key: string]: any };
+type DocItem = { id: string; projectId: string; docType: string; title: string; content: string; status: string; [key: string]: any };
 
 export const db = {
-  /** 当前是否使用 Prisma + SQLite（持久化） */
-  isPersistent: prismaAvailable,
+  /** 是否有持久化数据库（当前仅内存模式） */
+  isPersistent: false,
 
-  // === PhaseOutput API ===
-  async getOutputs(projectId: string, phase?: number, step?: number) {
-    if (prismaAvailable) {
-      try {
-        const where: any = { projectId };
-        if (phase !== undefined) where.phase = phase;
-        if (step !== undefined) where.step = step;
-        const outputs = await prisma.phaseOutput.findMany({ where, orderBy: [{ phase: 'asc' }, { step: 'asc' }] });
-        const latest = new Map<string, any>();
-        for (const o of outputs) {
-          const key = `${o.phase}-${o.step}`;
-          if (!latest.has(key)) latest.set(key, o);
-        }
-        return Array.from(latest.values());
-      } catch { /* fall through to memory */ }
-    }
-    return mem.getOutputs(projectId, phase, step);
+  // === PhaseOutput ===
+  getOutputs(projectId: string, phase?: number, step?: number): Promise<OutputItem[]> {
+    return Promise.resolve(mem.getOutputs(projectId, phase, step));
   },
 
-  async upsertOutput(projectId: string, phase: number, step: number, outputType: string, content: string, aiRoleUsed: string) {
-    if (prismaAvailable) {
-      try {
-        const existing = await prisma.phaseOutput.findFirst({ where: { projectId, phase, step } });
-        if (existing) {
-          return await prisma.phaseOutput.update({
-            where: { id: existing.id },
-            data: { content, outputType, aiRoleUsed },
-          });
-        }
-        return await prisma.phaseOutput.create({
-          data: { projectId, phase, step, outputType, content, aiRoleUsed: aiRoleUsed || '' },
-        });
-      } catch { /* fall through */ }
-    }
-    return mem.upsertOutput(projectId, phase, step, outputType, content, aiRoleUsed);
+  upsertOutput(projectId: string, phase: number, step: number, outputType: string, content: string, aiRoleUsed: string): Promise<any> {
+    return Promise.resolve(mem.upsertOutput(projectId, phase, step, outputType, content, aiRoleUsed));
   },
 
-  // === ChatMessage API ===
-  async getMessages(projectId: string, phase?: number, step?: number) {
-    if (prismaAvailable) {
-      try {
-        const where: any = { projectId };
-        if (phase !== undefined) where.phase = phase;
-        if (step !== undefined) where.step = step;
-        return await prisma.chatMessage.findMany({ where, orderBy: { createdAt: 'asc' }, take: 200 });
-      } catch { /* fall through */ }
-    }
-    return mem.getMessages(projectId, phase, step);
+  // === ChatMessage ===
+  getMessages(projectId: string, phase?: number, step?: number): Promise<any[]> {
+    return Promise.resolve(mem.getMessages(projectId, phase, step));
   },
 
-  async addMessage(projectId: string, phase: number, step: number, role: string, content: string, aiRole?: string | null) {
-    if (prismaAvailable) {
-      try {
-        return await prisma.chatMessage.create({
-          data: { projectId, phase, step, role, aiRole: aiRole || null, content },
-        });
-      } catch { /* fall through */ }
-    }
-    return mem.addMessage({ projectId, phase, step, role, aiRole, content });
+  addMessage(projectId: string, phase: number, step: number, role: string, content: string, aiRole?: string | null): Promise<any> {
+    return Promise.resolve(mem.addMessage(projectId, phase, step, role, content, aiRole));
   },
 
-  // === Document API ===
-  async getDocuments(projectId: string) {
-    if (prismaAvailable) {
-      try {
-        return await prisma.document.findMany({ where: { projectId }, orderBy: { createdAt: 'desc' } });
-      } catch { /* fall through */ }
-    }
-    return mem.getDocuments(projectId);
+  // === Document ===
+  getDocuments(projectId: string): Promise<any[]> {
+    return Promise.resolve(mem.getDocuments(projectId));
   },
 
-  async getDocument(id: string) {
-    if (prismaAvailable) {
-      try {
-        return await prisma.document.findUnique({ where: { id } });
-      } catch { /* fall through */ }
-    }
-    return mem.getDocument(id);
+  getDocument(id: string): Promise<any> {
+    return Promise.resolve(mem.getDocument(id));
   },
 
-  async upsertDocument(projectId: string, docType: string, title: string, content: string) {
-    if (prismaAvailable) {
-      try {
-        const existing = await prisma.document.findUnique({
-          where: { projectId_docType: { projectId, docType } },
-        });
-        if (existing) {
-          return await prisma.document.update({
-            where: { id: existing.id },
-            data: { content, title, status: 'draft' },
-          });
-        }
-        return await prisma.document.create({
-          data: { projectId, docType, title, content, status: 'draft' },
-        });
-      } catch { /* fall through */ }
-    }
-    return mem.upsertDocument(projectId, docType, title, content);
+  upsertDocument(projectId: string, docType: string, title: string, content: string): Promise<any> {
+    return Promise.resolve(mem.upsertDocument(projectId, docType, title, content));
   },
 
-  async updateDocumentStatus(id: string, status: string) {
-    if (prismaAvailable) {
-      try {
-        return await prisma.document.update({ where: { id }, data: { status } });
-      } catch { /* fall through */ }
-    }
-    return mem.updateDocumentStatus(id, status);
+  updateDocumentStatus(id: string, status: string): Promise<any> {
+    return Promise.resolve(mem.updateDocumentStatus(id, status));
   },
 
-  async deleteDocument(id: string) {
-    if (prismaAvailable) {
-      try {
-        await prisma.document.delete({ where: { id } });
-        return true;
-      } catch { return false; }
-    }
-    return mem.deleteDocument(id);
+  deleteDocument(id: string): Promise<boolean> {
+    return Promise.resolve(mem.deleteDocument(id));
   },
 };
