@@ -1,7 +1,7 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
 
 const stages = [
   { label: '发现', icon: '🔍', glow: '#06b6d4' },
@@ -27,9 +27,6 @@ export default function HomePage() {
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => { setMounted(true); }, []);
 
   const handleStart = () => {
     if (!name.trim() || submitting) return;
@@ -181,7 +178,7 @@ export default function HomePage() {
       >
         <div style={{ maxWidth: 420, width: '100%' }}>
           {/* Badge */}
-          {mounted && (
+
             <div
               style={{
                 display: 'inline-flex',
@@ -210,10 +207,8 @@ export default function HomePage() {
               />
               ICC 大赛 · AI 创新辅导
             </div>
-          )}
 
           {/* Headline */}
-          {mounted && (
             <h1
               style={{
                 fontSize: 'clamp(2rem, 5vw, 2.8rem)',
@@ -238,10 +233,8 @@ export default function HomePage() {
                 完成你的创新项目
               </span>
             </h1>
-          )}
 
           {/* Subtitle */}
-          {mounted && (
             <p
               style={{
                 marginTop: '0.875rem',
@@ -255,10 +248,8 @@ export default function HomePage() {
               <br />
               从创意到交付，陪你完成 ICC 大赛项目
             </p>
-          )}
 
           {/* Stage indicators */}
-          {mounted && (
             <div
               style={{
                 display: 'flex',
@@ -315,10 +306,8 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-          )}
 
           {/* Form card */}
-          {mounted && (
             <div
               style={{
                 marginTop: '2rem',
@@ -474,10 +463,8 @@ export default function HomePage() {
                 无需注册 · 免费使用
               </p>
             </div>
-          )}
 
           {/* Trust line */}
-          {mounted && (
             <p
               style={{
                 marginTop: '1.5rem',
@@ -489,7 +476,6 @@ export default function HomePage() {
             >
               已帮助 <span style={{ color: '#64748b', fontWeight: 600 }}>100+</span> 学员完成 ICC 项目
             </p>
-          )}
         </div>
       </main>
     </div>
