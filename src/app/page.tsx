@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 const stages = [
@@ -27,6 +27,8 @@ export default function HomePage() {
   const [name, setName] = useState('');
   const [code, setCode] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
 
   const handleStart = () => {
     if (!name.trim() || submitting) return;
@@ -104,6 +106,7 @@ export default function HomePage() {
 
       {/* Nav */}
       <header
+        className="home-header"
         style={{
           position: 'relative',
           zIndex: 10,
@@ -163,6 +166,7 @@ export default function HomePage() {
 
       {/* Main content */}
       <main
+        className="home-main"
         style={{
           position: 'relative',
           zIndex: 10,
@@ -208,6 +212,7 @@ export default function HomePage() {
 
           {/* Headline */}
             <h1
+              className="home-headline"
               style={{
                 fontSize: 'clamp(2rem, 5vw, 2.8rem)',
                 fontWeight: 800,
@@ -234,6 +239,7 @@ export default function HomePage() {
 
           {/* Subtitle */}
             <p
+              className="home-subtitle"
               style={{
                 marginTop: '0.875rem',
                 fontSize: 14,
@@ -249,6 +255,7 @@ export default function HomePage() {
 
           {/* Stage indicators */}
             <div
+              className="home-stage-wrap"
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -274,6 +281,7 @@ export default function HomePage() {
                   onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
                 >
                   <div
+                    className="home-stage-icon"
                     style={{
                       width: 40,
                       height: 40,
@@ -307,6 +315,7 @@ export default function HomePage() {
 
           {/* Form card */}
             <div
+              className="home-card"
               style={{
                 marginTop: '2rem',
                 width: '100%',
@@ -476,6 +485,21 @@ export default function HomePage() {
             </p>
         </div>
       </main>
+
+      {mounted && (
+        <style>{`
+          @media (max-width: 640px) {
+            .home-main { padding: 1.5rem 1rem !important; }
+            .home-card { padding: 1.25rem !important; border-radius: 16px !important; }
+            .home-headline { font-size: clamp(1.6rem, 6vw, 2rem) !important; }
+            .home-stage-icon { width: 34px !important; height: 34px !important; font-size: 14px !important; border-radius: 10px !important; }
+            .home-stage-wrap { gap: 6px !important; }
+            .home-header { padding: 0.5rem 0.75rem !important; }
+            .home-subtitle { font-size: 13px !important; }
+            .home-badge { font-size: 10px !important; padding: 0.2rem 0.6rem !important; }
+          }
+        `}</style>
+      )}
     </div>
   );
 }

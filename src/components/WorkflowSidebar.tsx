@@ -19,10 +19,10 @@ export default function WorkflowSidebar({ currentPhase, currentStep, onNavigate 
 
   return (
     <nav className="flex h-full flex-col overflow-y-auto">
-      <div className="border-b border-white/[0.06] px-5 py-6">
+      <div className="border-b border-white/[0.06] px-4 sm:px-5 py-4 sm:py-6">
         <div className="text-[11px] uppercase tracking-[0.22em] text-slate-500">AIICC Studio</div>
-        <h2 className="mt-2 text-xl font-semibold tracking-tight text-white">项目工作流</h2>
-        <p className="mt-1 text-xs leading-5 text-slate-400">
+        <h2 className="mt-2 text-lg sm:text-xl font-semibold tracking-tight text-white">项目工作流</h2>
+        <p className="mt-1 text-xs leading-5 text-slate-400 hidden sm:block">
           从发现到交付，沿着 5 个阶段逐步推进你的创新项目。
         </p>
 
@@ -44,7 +44,7 @@ export default function WorkflowSidebar({ currentPhase, currentStep, onNavigate 
         </div>
       </div>
 
-      <div className="flex-1 space-y-3 p-4">
+      <div className="flex-1 space-y-3 p-3 sm:p-4">
         {workflowPhases.map(phase => {
           const isActive = phase.id === currentPhase;
           const isPast = phase.id < currentPhase;

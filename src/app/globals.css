@@ -35,6 +35,13 @@ body {
   0%, 100% { transform: translateY(0) scale(1); }
   50% { transform: translateY(-20px) scale(1.05); }
 }
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+.animate-slide-in {
+  animation: slideIn 0.25s ease-out;
+}
 
 /* Base surface styles matching homepage dark tech theme */
 .bg-theme { background-color: #07070d; }

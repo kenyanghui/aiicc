@@ -76,8 +76,8 @@ export default function ChatPanel({ phase, step, aiRole, studentName, projectId 
   return (
     <div className="flex h-full flex-col bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01))]">
       {/* 角色标识 */}
-      <div className="border-b border-white/[0.06] bg-white/[0.02] px-6 py-5">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="border-b border-white/[0.06] bg-white/[0.02] px-4 sm:px-6 py-3 sm:py-5">
+        <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
           <div className="flex items-center gap-3">
             <div
               className="flex h-11 w-11 items-center justify-center rounded-2xl text-lg"
@@ -98,7 +98,7 @@ export default function ChatPanel({ phase, step, aiRole, studentName, projectId 
             </div>
           </div>
 
-          <div className="rounded-2xl border border-white/[0.06] bg-black/20 px-3 py-2 text-right">
+          <div className="hidden sm:block rounded-2xl border border-white/[0.06] bg-black/20 px-3 py-2 text-right">
             <div className="text-[10px] uppercase tracking-[0.16em] text-slate-500">当前对象</div>
             <div className="mt-1 text-sm text-slate-200">{studentName}</div>
           </div>
@@ -106,7 +106,7 @@ export default function ChatPanel({ phase, step, aiRole, studentName, projectId 
       </div>
 
       {/* 对话区 */}
-      <div className="flex-1 space-y-4 overflow-y-auto px-6 py-5">
+      <div className="flex-1 space-y-4 overflow-y-auto px-4 sm:px-6 py-4 sm:py-5">
         {messages.map(msg => {
           const isAI = msg.role === 'ai';
           const meta = msg.aiRole ? AIRoleMeta[msg.aiRole] : null;
@@ -114,7 +114,7 @@ export default function ChatPanel({ phase, step, aiRole, studentName, projectId 
           return (
             <div key={msg.id} className={`msg-animate flex ${isAI ? 'justify-start' : 'justify-end'}`}>
               <div
-                className={`max-w-[82%] rounded-[22px] border px-4 py-3.5 leading-relaxed shadow-lg shadow-black/10 ${
+                className={`max-w-[92%] sm:max-w-[82%] rounded-[22px] border px-4 py-3.5 leading-relaxed shadow-lg shadow-black/10 ${
                   isAI
                     ? 'border-white/[0.06] bg-white/[0.05] text-slate-200'
                     : 'border-cyan-400/20 bg-cyan-500/15 text-cyan-100'
@@ -150,10 +150,10 @@ export default function ChatPanel({ phase, step, aiRole, studentName, projectId 
       </div>
 
       {/* 输入区 */}
-      <div className="border-t border-white/[0.06] bg-black/10 p-4">
-        <div className="mb-3 flex items-center justify-between text-xs text-slate-500">
-          <span>直接输入想法、困惑、例子或草稿都可以</span>
-          <span>{loading ? 'AI 正在思考...' : '按 Enter 发送'}</span>
+      <div className="border-t border-white/[0.06] bg-black/10 p-3 sm:p-4">
+        <div className="mb-2 sm:mb-3 flex items-center justify-between text-[11px] sm:text-xs text-slate-500">
+          <span className="truncate">直接输入想法、困惑或草稿</span>
+          <span className="shrink-0">{loading ? 'AI 正在思考...' : 'Enter 发送'}</span>
         </div>
         <div className="flex gap-2">
           <input
@@ -161,13 +161,13 @@ export default function ChatPanel({ phase, step, aiRole, studentName, projectId 
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSend()}
             placeholder="输入你的想法..."
-            className="flex-1 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition focus:border-cyan-500/50"
+            className="flex-1 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-3 sm:px-4 py-2.5 sm:py-3 text-sm text-white placeholder-slate-500 outline-none transition focus:border-cyan-500/50"
             disabled={loading}
           />
           <button
             onClick={handleSend}
             disabled={!input.trim() || loading}
-            className="rounded-2xl bg-cyan-500 px-5 py-3 text-sm font-medium text-white transition hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-2xl bg-cyan-500 px-4 sm:px-5 py-2.5 sm:py-3 text-sm font-medium text-white transition hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-40"
           >
             发送
           </button>

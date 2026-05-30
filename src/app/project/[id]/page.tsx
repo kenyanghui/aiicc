@@ -16,6 +16,7 @@ export default function ProjectPage() {
 
   const [currentPhase, setCurrentPhase] = useState(1);
   const [currentStep, setCurrentStep] = useState(1);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem('aiicc_student');
@@ -44,6 +45,7 @@ export default function ProjectPage() {
   const handleNavigate = (phaseId: number, stepNum: number) => {
     setCurrentPhase(phaseId);
     setCurrentStep(stepNum);
+    setMobileSidebarOpen(false);
   };
 
   const goNext = () => {
@@ -95,7 +97,8 @@ export default function ProjectPage() {
       </div>
 
       <div className="relative flex min-h-screen">
-        <aside className="w-[320px] shrink-0 border-r border-white/[0.06] bg-black/20 backdrop-blur-xl">
+        {/* Desktop sidebar */}
+        <aside className="hidden lg:block w-[320px] shrink-0 border-r border-white/[0.06] bg-black/20 backdrop-blur-xl">
           <WorkflowSidebar
             currentPhase={currentPhase}
             currentStep={currentStep}
@@ -103,16 +106,48 @@ export default function ProjectPage() {
           />
         </aside>
 
+        {/* Mobile sidebar overlay */}
+        {mobileSidebarOpen && (
+          <div className="fixed inset-0 z-50 lg:hidden">
+            <div
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setMobileSidebarOpen(false)}
+            />
+            <div className="absolute left-0 top-0 h-full w-[300px] max-w-[85vw] animate-slide-in border-r border-white/[0.06] bg-[#07070d] shadow-2xl shadow-cyan-500/10">
+              <div className="flex justify-end p-3">
+                <button
+                  onClick={() => setMobileSidebarOpen(false)}
+                  className="flex h-8 w-8 items-center justify-center rounded-full text-slate-400 transition hover:bg-white/[0.06] hover:text-white"
+                >
+                  ✕
+                </button>
+              </div>
+              <WorkflowSidebar
+                currentPhase={currentPhase}
+                currentStep={currentStep}
+                onNavigate={handleNavigate}
+              />
+            </div>
+          </div>
+        )}
+
         <main className="flex min-w-0 flex-1 flex-col">
           <header className="border-b border-white/[0.06] bg-white/[0.02] backdrop-blur-xl">
-            <div className="flex flex-wrap items-start justify-between gap-4 px-8 py-6">
+            <div className="flex flex-wrap items-start justify-between gap-4 px-4 sm:px-8 py-4 sm:py-6">
               <div className="space-y-3">
-                <div className="flex items-center gap-3 text-sm">
+                <div className="flex items-center gap-2 sm:gap-3 text-sm">
+                  <button
+                    onClick={() => setMobileSidebarOpen(true)}
+                    className="flex lg:hidden h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] text-slate-400 transition hover:border-white/[0.16] hover:text-white"
+                    aria-label="打开工作流菜单"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+                  </button>
                   <button
                     onClick={() => router.push('/')}
                     className="rounded-full border border-white/[0.08] px-3 py-1.5 text-slate-400 transition hover:border-white/[0.16] hover:text-white"
                   >
-                    ← 返回首页
+                    ← 返回
                   </button>
                   <span className="text-slate-600">/</span>
                   <span className="text-slate-300">{studentName}</span>
@@ -127,10 +162,10 @@ export default function ProjectPage() {
                       Phase {phase.id}
                     </span>
                   </div>
-                  <h1 className="text-3xl font-semibold tracking-tight text-white">
+                  <h1 className="text-xl sm:text-3xl font-semibold tracking-tight text-white">
                     {step.title}
                   </h1>
-                  <p className="mt-2 max-w-3xl text-sm leading-7 text-slate-400">
+                  <p className="mt-2 max-w-3xl text-xs sm:text-sm leading-6 sm:leading-7 text-slate-400">
                     {step.description}
                   </p>
                 </div>
@@ -172,9 +207,9 @@ export default function ProjectPage() {
             </div>
           </header>
 
-          <div className="flex-1 overflow-hidden p-6">
-            <div className="grid h-full min-h-0 grid-cols-1 gap-6 xl:grid-cols-[380px,minmax(0,1fr)]">
-              <section className="min-h-0 overflow-y-auto rounded-[28px] border border-white/[0.06] bg-white/[0.03] p-6 shadow-2xl shadow-black/20 backdrop-blur-xl">
+          <div className="flex-1 overflow-y-auto lg:overflow-hidden p-4 sm:p-6">
+            <div className="grid h-full min-h-0 grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-[380px,minmax(0,1fr)]">
+              <section className="min-h-0 overflow-y-auto rounded-2xl sm:rounded-[28px] border border-white/[0.06] bg-white/[0.03] p-4 sm:p-6 shadow-2xl shadow-black/20 backdrop-blur-xl">
                 <div className="rounded-3xl border border-cyan-500/15 bg-gradient-to-br from-cyan-500/14 via-cyan-500/8 to-transparent p-5">
                   <div className="mb-3 flex items-center justify-between">
                     <span className="rounded-full border border-white/[0.08] bg-black/20 px-3 py-1 text-[11px] uppercase tracking-[0.18em] text-slate-300">
@@ -258,7 +293,7 @@ export default function ProjectPage() {
                 </div>
               </section>
 
-              <section className="min-h-0 overflow-hidden rounded-[28px] border border-white/[0.06] bg-white/[0.03] shadow-2xl shadow-black/20 backdrop-blur-xl">
+              <section className="min-h-0 flex flex-col overflow-hidden rounded-2xl sm:rounded-[28px] border border-white/[0.06] bg-white/[0.03] shadow-2xl shadow-black/20 backdrop-blur-xl">
                 <ChatPanel
                   phase={currentPhase}
                   step={currentStep}
