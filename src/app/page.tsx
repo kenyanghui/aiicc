@@ -36,8 +36,6 @@ export default function HomePage() {
     router.push(`/project/${projectId}`);
   };
 
-  const s: (...args: React.CSSProperties[]) => React.CSSProperties = (...objs) => Object.assign({}, ...objs);
-
   return (
     <div
       style={{
