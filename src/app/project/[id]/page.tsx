@@ -61,14 +61,14 @@ export default function ProjectPage() {
 
   if (!phase || !step) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-slate-400">
+      <div className="flex min-h-screen items-center justify-center text-slate-500">
         阶段或步骤未找到
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen bg-[#07070d]">
       {/* 侧栏 */}
       <div className="w-64 shrink-0">
         <WorkflowSidebar
@@ -81,7 +81,7 @@ export default function ProjectPage() {
       {/* 主区域 */}
       <div className="flex flex-1 flex-col">
         {/* 顶部导航 */}
-        <header className="flex items-center justify-between border-b border-slate-700/50 px-6 py-3">
+        <header className="flex items-center justify-between border-b border-white/[0.06] px-6 py-3">
           <div className="flex items-center gap-3">
             <button
               onClick={() => router.push('/')}
@@ -89,10 +89,10 @@ export default function ProjectPage() {
             >
               ← 返回
             </button>
-            <span className="text-sm text-slate-500">/</span>
+            <span className="text-sm text-slate-600">/</span>
             <span className="text-sm text-slate-300">{studentName}</span>
-            <span className="text-sm text-slate-500">/</span>
-            <span className="text-sm text-cyan-300">
+            <span className="text-sm text-slate-600">/</span>
+            <span className="text-sm text-cyan-400">
               {phase.icon} {phase.name}
             </span>
           </div>
@@ -107,7 +107,7 @@ export default function ProjectPage() {
         {/* 步骤说明 + 聊天 */}
         <div className="flex flex-1 overflow-hidden">
           {/* 步骤说明区 */}
-          <div className="flex w-72 shrink-0 flex-col border-r border-slate-700/50 bg-slate-800/20 p-6">
+          <div className="flex w-72 shrink-0 flex-col border-r border-white/[0.06] bg-white/[0.02] p-6">
             <div className="mb-1 text-xs text-slate-500">
               第 {phase.id} 阶段 · 第 {step.step} 步
             </div>
@@ -118,7 +118,7 @@ export default function ProjectPage() {
               {step.description}
             </p>
 
-            <div className="mb-6 rounded-lg bg-slate-800/50 px-4 py-3">
+            <div className="mb-6 rounded-lg bg-white/[0.04] px-4 py-3">
               <div className="mb-1 text-[10px] uppercase tracking-wider text-slate-500">
                 当前 AI 角色
               </div>
@@ -133,7 +133,7 @@ export default function ProjectPage() {
             {/* 产出类型 */}
             <div className="mb-6">
               <div className="mb-1 text-[10px] uppercase tracking-wider text-slate-500">产出类型</div>
-              <span className="rounded-md bg-slate-700/50 px-2 py-1 text-xs text-slate-300">
+              <span className="rounded-md bg-white/[0.04] px-2 py-1 text-xs text-slate-300">
                 {step.outputType === 'text' ? '📝 文字' : step.outputType === 'canvas' ? '🎨 画布' : '📋 列表'}
               </span>
             </div>
@@ -144,13 +144,13 @@ export default function ProjectPage() {
               <div className="flex gap-2">
                 <button
                   onClick={goPrev}
-                  className="flex-1 rounded-lg border border-slate-600 py-2 text-xs text-slate-400 transition hover:border-slate-500 hover:text-white"
+                  className="flex-1 rounded-lg border border-white/[0.08] py-2 text-xs text-slate-400 transition hover:border-white/[0.15] hover:text-white"
                 >
                   ← 上一步
                 </button>
                 <button
                   onClick={goNext}
-                  className="flex-1 rounded-lg bg-cyan-500 py-2 text-xs font-medium text-white transition hover:bg-cyan-400"
+                  className="flex-1 rounded-lg bg-cyan-500 py-2 text-xs font-medium text-white shadow-sm shadow-cyan-500/20 transition hover:bg-cyan-400"
                 >
                   下一步 →
                 </button>

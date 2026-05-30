@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: 'Inter', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --color-brand: #06b6d4;
+  --color-brand-light: #22d3ee;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #07070d;
+  color: #f1f5f9;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.12); }
+
+::selection {
+  background: rgba(6, 182, 212, 0.25);
+  color: #fff;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-20px) scale(1.05); }
+}
+
+/* Base surface styles matching homepage dark tech theme */
+.bg-theme { background-color: #07070d; }
+.bg-surface { background-color: rgba(255,255,255,0.03); }
+.bg-surface-hover { background-color: rgba(255,255,255,0.06); }
+.border-theme { border-color: rgba(255,255,255,0.06); }
+.border-theme-hover { border-color: rgba(255,255,255,0.1); }
+.text-muted { color: #64748b; }
+.text-dim { color: #475569; }

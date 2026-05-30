@@ -16,25 +16,25 @@ export default function MethodologyCard({ phaseId, methodologyId = 'lean-startup
   const phaseHint = getMethodologyForPhase(methodologyId, phaseId);
 
   return (
-    <div className="rounded-lg border border-amber-500/20 bg-amber-500/5">
+    <div className="rounded-lg border border-white/[0.06] bg-white/[0.02]">
       <button
         onClick={() => setExpanded(!expanded)}
         className="flex w-full items-center gap-2 px-4 py-3 text-left text-xs"
       >
         <span>📘</span>
-        <span className="font-medium text-amber-300">精益创业</span>
+        <span className="font-medium text-cyan-300">精益创业</span>
         <span className="text-slate-500">— 当前阶段的应用</span>
         <span className="ml-auto text-slate-500">{expanded ? '▲' : '▼'}</span>
       </button>
 
       {expanded && (
-        <div className="border-t border-amber-500/10 px-4 py-3">
+        <div className="border-t border-white/[0.06] px-4 py-3">
           <p className="mb-3 text-xs leading-relaxed text-slate-400">{phaseHint}</p>
 
           <div className="space-y-2">
             {m.frameworks.slice(0, 3).map(fw => (
-              <div key={fw.name} className="rounded-md bg-slate-800/50 px-3 py-2">
-                <div className="text-[11px] font-medium text-amber-300">{fw.name}</div>
+              <div key={fw.name} className="rounded-md bg-white/[0.03] px-3 py-2">
+                <div className="text-[11px] font-medium text-cyan-300">{fw.name}</div>
                 <div className="mt-0.5 text-[10px] leading-relaxed text-slate-500">{fw.concept}</div>
               </div>
             ))}

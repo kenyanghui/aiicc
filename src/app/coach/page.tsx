@@ -20,8 +20,8 @@ export default function CoachPage() {
   ]);
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="mx-auto max-w-5xl">
+    <div className="min-h-screen">
+      <div className="mx-auto max-w-5xl px-6 py-8">
         {/* 头部 */}
         <div className="mb-8 flex items-center justify-between">
           <div>
@@ -45,7 +45,7 @@ export default function CoachPage() {
             { label: '进行中项目', value: students.filter(s => s.phase < 5).length.toString(), color: 'text-yellow-400' },
             { label: '已完成项目', value: students.filter(s => s.phase >= 5).length.toString(), color: 'text-green-400' },
           ].map(stat => (
-            <div key={stat.label} className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-5">
+            <div key={stat.label} className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-5">
               <div className={`text-3xl font-bold ${stat.color}`}>{stat.value}</div>
               <div className="mt-1 text-xs text-slate-500">{stat.label}</div>
             </div>
@@ -53,11 +53,11 @@ export default function CoachPage() {
         </div>
 
         {/* 学员列表 */}
-        <div className="rounded-xl border border-slate-700/50 bg-slate-800/30">
-          <div className="border-b border-slate-700/50 px-6 py-4">
+        <div className="rounded-xl border border-white/[0.06] bg-white/[0.03]">
+          <div className="border-b border-white/[0.06] px-6 py-4">
             <h2 className="text-sm font-medium text-white">学员项目</h2>
           </div>
-          <div className="divide-y divide-slate-700/50">
+          <div className="divide-y divide-white/[0.06]">
             {students.map(s => {
               const phaseLabels = ['', '发现', '定义', '构思', '原型', '交付'];
               const phaseColors = ['', 'text-purple-400', 'text-blue-400', 'text-yellow-400', 'text-emerald-400', 'text-rose-400'];
@@ -65,9 +65,9 @@ export default function CoachPage() {
                 <div
                   key={s.id}
                   onClick={() => router.push(`/coach/students/${s.id}`)}
-                  className="flex cursor-pointer items-center gap-4 px-6 py-4 transition hover:bg-slate-700/30"
+                  className="flex cursor-pointer items-center gap-4 px-6 py-4 transition hover:bg-white/[0.04]"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-700 text-sm text-white">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/[0.08] text-sm text-white">
                     {s.name[0]}
                   </div>
                   <div className="flex-1">

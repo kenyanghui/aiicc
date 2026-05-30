@@ -76,7 +76,7 @@ export default function ChatPanel({ phase, step, aiRole, studentName, projectId 
   return (
     <div className="flex h-full flex-col">
       {/* 角色标识 */}
-      <div className="flex items-center gap-2 border-b border-slate-700/50 px-6 py-3">
+      <div className="flex items-center gap-2 border-b border-white/[0.06] px-6 py-3">
         <div
           className="flex h-8 w-8 items-center justify-center rounded-full text-sm"
           style={{ backgroundColor: `${roleMeta.color}20` }}
@@ -100,8 +100,8 @@ export default function ChatPanel({ phase, step, aiRole, studentName, projectId 
               <div
                 className={`max-w-[80%] rounded-2xl px-4 py-3 leading-relaxed ${
                   isAI
-                    ? 'bg-slate-700/60 text-slate-200'
-                    : 'bg-cyan-500/20 text-cyan-100'
+                    ? 'bg-white/[0.05] text-slate-200'
+                    : 'bg-cyan-500/15 text-cyan-100'
                 }`}
               >
                 {isAI && meta && (
@@ -120,7 +120,7 @@ export default function ChatPanel({ phase, step, aiRole, studentName, projectId 
 
         {loading && (
           <div className="msg-animate flex justify-start">
-            <div className="rounded-2xl bg-slate-700/60 px-4 py-3">
+            <div className="rounded-2xl bg-white/[0.05] px-4 py-3">
               <div className="flex gap-1.5">
                 <span className="h-2 w-2 animate-bounce rounded-full bg-slate-500" />
                 <span className="h-2 w-2 animate-bounce rounded-full bg-slate-500" style={{ animationDelay: '0.1s' }} />
@@ -134,14 +134,14 @@ export default function ChatPanel({ phase, step, aiRole, studentName, projectId 
       </div>
 
       {/* 输入区 */}
-      <div className="border-t border-slate-700/50 p-4">
+      <div className="border-t border-white/[0.06] p-4">
         <div className="flex gap-2">
           <input
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleSend()}
             placeholder="输入你的想法..."
-            className="flex-1 rounded-lg border border-slate-600 bg-slate-700/50 px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition focus:border-cyan-500/50"
+            className="flex-1 rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none transition focus:border-cyan-500/50"
             disabled={loading}
           />
           <button

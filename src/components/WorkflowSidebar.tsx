@@ -10,8 +10,8 @@ interface Props {
 
 export default function WorkflowSidebar({ currentPhase, currentStep, onNavigate }: Props) {
   return (
-    <nav className="flex h-full flex-col overflow-y-auto border-r border-slate-700/50 bg-slate-800/30">
-      <div className="border-b border-slate-700/50 p-4">
+    <nav className="flex h-full flex-col overflow-y-auto border-r border-white/[0.06] bg-white/[0.02]">
+      <div className="border-b border-white/[0.06] p-4">
         <h2 className="text-sm font-semibold text-cyan-400">项目工作流</h2>
         <p className="mt-0.5 text-[10px] text-slate-500">5 阶段 · 20 步骤</p>
       </div>
@@ -51,7 +51,7 @@ export default function WorkflowSidebar({ currentPhase, currentStep, onNavigate 
 
               {/* 步骤列表（仅当前阶段展开） */}
               {isActive && (
-                <div className="ml-4 mt-1 space-y-0.5 border-l border-slate-700/50 pl-3">
+                <div className="ml-4 mt-1 space-y-0.5 border-l border-white/[0.06] pl-3">
                   {phase.steps.map(step => {
                     const isStepActive = step.step === currentStep;
                     const isStepDone = step.step < currentStep;
@@ -61,16 +61,16 @@ export default function WorkflowSidebar({ currentPhase, currentStep, onNavigate 
                         onClick={() => onNavigate(phase.id, step.step)}
                         className={`flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-[11px] transition ${
                           isStepActive
-                            ? 'bg-slate-700/60 text-white'
+                            ? 'bg-white/[0.06] text-white'
                             : isStepDone
                               ? 'text-slate-400'
-                              : 'text-slate-600'
+                              : 'text-white/[0.2]'
                         }`}
                       >
                         {isStepDone ? (
                           <span className="text-green-400">✓</span>
                         ) : (
-                          <span className="text-slate-600">{step.step}</span>
+                          <span className="text-white/[0.25]">{step.step}</span>
                         )}
                         <span className="truncate">{step.title}</span>
                       </button>

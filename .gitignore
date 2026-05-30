@@ -1,12 +1,11 @@
-.claude/
-__pycache__/
-*.pyc
 node_modules/
-.env
 .next/
-venv/
-.venv/
-dist/
-build/
-*.log
-*.db
+.env
+.env.local
+.DS_Store
+*.tsbuildinfo
+src/.backup/
+src/node_modules_broken/
+
+# Local Netlify folder
+.netlify

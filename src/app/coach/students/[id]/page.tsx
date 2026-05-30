@@ -32,7 +32,7 @@ export default function StudentDetailPage() {
 
         <div className="grid gap-6 lg:grid-cols-2">
           {/* 进度卡片 */}
-          <div className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-6">
+          <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-6">
             <h2 className="mb-4 text-sm font-medium text-white">项目进度</h2>
             <div className="space-y-3">
               {workflowPhases.map(p => (
@@ -45,9 +45,9 @@ export default function StudentDetailPage() {
                         {p.id <= 2 ? `${p.steps.length}/${p.steps.length}` : '0/' + p.steps.length}
                       </span>
                     </div>
-                    <div className="mt-1 h-1.5 rounded-full bg-slate-700">
+                    <div className="mt-1 h-1.5 rounded-full bg-white/[0.06]">
                       <div
-                        className={`h-full rounded-full ${p.id <= 2 ? 'bg-cyan-500' : 'bg-slate-600'}`}
+                        className={`h-full rounded-full ${p.id <= 2 ? 'bg-cyan-500' : 'bg-white/[0.1]'}`}
                         style={{ width: p.id <= 2 ? '100%' : '0%' }}
                       />
                     </div>
@@ -58,12 +58,12 @@ export default function StudentDetailPage() {
           </div>
 
           {/* 最近对话 */}
-          <div className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-6">
+          <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-6">
             <h2 className="mb-4 text-sm font-medium text-white">最近对话</h2>
             <div className="space-y-3">
               {mockChatLog.map((msg, i) => (
                 <div key={i} className={`rounded-lg px-3 py-2 ${
-                  msg.role === 'ai' ? 'bg-slate-700/40' : 'bg-cyan-500/10'
+                  msg.role === 'ai' ? 'bg-white/[0.04]' : 'bg-cyan-500/10'
                 }`}>
                   <div className="flex items-center gap-2 text-[10px] text-slate-500">
                     <span>{msg.role === 'ai' ? 'AI' : '学员'}</span>
@@ -76,11 +76,11 @@ export default function StudentDetailPage() {
           </div>
 
           {/* 教练点评 */}
-          <div className="rounded-xl border border-slate-700/50 bg-slate-800/30 p-6 lg:col-span-2">
+          <div className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-6 lg:col-span-2">
             <h2 className="mb-4 text-sm font-medium text-white">教练点评</h2>
             <textarea
               placeholder="给这个学员写点评..."
-              className="min-h-[100px] w-full rounded-lg border border-slate-600 bg-slate-700/50 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition focus:border-cyan-500/50"
+              className="min-h-[100px] w-full rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition focus:border-cyan-500/50"
             />
             <button className="mt-3 rounded-lg bg-cyan-500 px-4 py-2 text-xs font-medium text-white transition hover:bg-cyan-400">
               保存点评
