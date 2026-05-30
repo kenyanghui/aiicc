@@ -12,18 +12,55 @@ interface Props {
   projectId: string;
 }
 
+async function loadMessages(projectId: string, phase: number, step: number): Promise<ChatMessage[]> {
+  try {
+    const res = await fetch(`/api/chat/history?projectId=${projectId}&phase=${phase}&step=${step}`);
+    const json = await res.json();
+    if (json.ok) return json.data;
+    return [];
+  } catch {
+    return [];
+  }
+}
+
+async function saveMessage(msg: ChatMessage) {
+  try {
+    await fetch('/api/chat/history', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(msg),
+    });
+  } catch {
+    // silent
+  }
+}
+
 export default function ChatPanel({ phase, step, aiRole, studentName, projectId }: Props) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [initialLoaded, setInitialLoaded] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const roleMeta = AIRoleMeta[aiRole];
+  const prevStepKey = useRef('');
 
-  // 进入新步骤时，显示开场消息
+  // 进入新步骤时：先试加载历史，没有则显示开场消息
   useEffect(() => {
-    const opening = getOpeningMessage(phase, step, studentName);
-    setMessages([opening]);
-  }, [phase, step, studentName]);
+    const stepKey = `${phase}-${step}`;
+    if (stepKey === prevStepKey.current && initialLoaded) return;
+    prevStepKey.current = stepKey;
+    setInitialLoaded(false);
+
+    loadMessages(projectId, phase, step).then((history) => {
+      if (history.length > 0) {
+        setMessages(history);
+      } else {
+        const opening = getOpeningMessage(phase, step, studentName);
+        setMessages([opening]);
+      }
+      setInitialLoaded(true);
+    });
+  }, [phase, step, projectId, studentName]);
 
   // 自动滚到底部
   useEffect(() => {
@@ -47,6 +84,9 @@ export default function ChatPanel({ phase, step, aiRole, studentName, projectId 
     setInput('');
     setLoading(true);
 
+    // 保存学生消息（异步，不阻塞）
+    saveMessage(userMsg);
+
     try {
       const res = await sendChatMessage({
         role: aiRole,
@@ -68,6 +108,8 @@ export default function ChatPanel({ phase, step, aiRole, studentName, projectId 
       };
 
       setMessages(prev => [...prev, aiMsg]);
+      // 保存 AI 回复
+      saveMessage(aiMsg);
     } finally {
       setLoading(false);
     }
@@ -107,6 +149,11 @@ export default function ChatPanel({ phase, step, aiRole, studentName, projectId 
 
       {/* 对话区 */}
       <div className="flex-1 space-y-4 overflow-y-auto px-4 sm:px-6 py-4 sm:py-5">
+        {!initialLoaded && (
+          <div className="flex items-center justify-center py-12 text-sm text-slate-500">
+            加载中...
+          </div>
+        )}
         {messages.map(msg => {
           const isAI = msg.role === 'ai';
           const meta = msg.aiRole ? AIRoleMeta[msg.aiRole] : null;

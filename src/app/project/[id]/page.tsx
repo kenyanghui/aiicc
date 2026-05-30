@@ -149,6 +149,12 @@ export default function ProjectPage() {
                   >
                     ← 返回
                   </button>
+                  <button
+                    onClick={() => router.push(`/project/${params.id}/documents`)}
+                    className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1.5 text-cyan-300 transition hover:border-cyan-500/60 hover:bg-cyan-500/20"
+                  >
+                    📄 竞赛文档
+                  </button>
                   <span className="text-slate-600">/</span>
                   <span className="text-slate-300">{studentName}</span>
                   <span className="text-slate-600">/</span>

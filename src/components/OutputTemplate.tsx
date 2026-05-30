@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { saveOutput, loadStepOutput } from '@/lib/output-store';
 
 interface Props {
   outputType: 'text' | 'canvas' | 'list';
@@ -8,14 +9,36 @@ interface Props {
   content?: string;
   onSave?: (content: string) => void;
   readOnly?: boolean;
+  projectId?: string;
+  phase?: number;
+  step?: number;
 }
 
-export default function OutputTemplate({ outputType, title, content: initialContent, onSave, readOnly }: Props) {
+export default function OutputTemplate({ outputType, title, content: initialContent, onSave, readOnly, projectId, phase, step }: Props) {
   const [content, setContent] = useState(initialContent || '');
   const [saved, setSaved] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSave = () => {
+  // Load saved output from DB on mount
+  useEffect(() => {
+    if (projectId && phase && step && !initialContent) {
+      setLoading(true);
+      loadStepOutput(projectId, phase, step).then((output) => {
+        if (output?.content) {
+          setContent(output.content);
+        }
+        setLoading(false);
+      });
+    }
+  }, [projectId, phase, step, initialContent]);
+
+  const handleSave = async () => {
+    // Persist to DB
+    if (projectId && phase && step) {
+      await saveOutput(projectId, phase, step, outputType, content);
+    }
+    // Also call parent callback
     if (onSave) onSave(content);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
@@ -36,7 +59,8 @@ export default function OutputTemplate({ outputType, title, content: initialCont
             {outputType === 'text' ? '文本产出' : outputType === 'canvas' ? '画布产出' : '列表产出'}
           </div>
         </div>
-        {!readOnly && (
+        {loading && <span className="text-xs text-slate-500">加载中...</span>}
+        {!readOnly && !loading && (
           <span className="text-xs text-slate-500">{expanded ? '收起 ▲' : '展开 ▼'}</span>
         )}
       </button>
@@ -83,16 +107,23 @@ function TextEditor({ content, onChange, readOnly }: { content: string; onChange
 
 function CanvasEditor({ content, onChange, readOnly }: { content: string; onChange: (v: string) => void; readOnly?: boolean }) {
   const sections = ['用户痛点', '解决方案', '独特价值', '目标用户'];
+  const values = content ? content.split('|||') : ['', '', '', ''];
+
+  const updateValue = (idx: number, val: string) => {
+    const newValues = [...values];
+    newValues[idx] = val;
+    onChange(newValues.join('|||'));
+  };
 
   return (
     <div className="grid gap-2">
-      {sections.map(section => (
+      {sections.map((section, i) => (
         <div key={section}>
           <label className="mb-1 block text-[10px] font-medium text-slate-500">{section}</label>
           <input
             type="text"
-            value={content}
-            onChange={e => onChange(e.target.value)}
+            value={values[i] || ''}
+            onChange={e => updateValue(i, e.target.value)}
             readOnly={readOnly}
             placeholder={`输入${section}...`}
             className="w-full rounded-lg border border-slate-600 bg-slate-700/30 px-3 py-2 text-xs text-slate-200 placeholder-slate-600 outline-none transition focus:border-cyan-500/50 read-only:cursor-default read-only:opacity-80"
