@@ -46,7 +46,7 @@ export default function MethodologyCard({ phaseId, methodologyId = 'lean-startup
             rel="noopener noreferrer"
             className="mt-3 block text-[10px] text-slate-600 transition hover:text-slate-400"
           >
-            了解更多 → lean-startup skill
+            了解更多 →
           </a>
         </div>
       )}

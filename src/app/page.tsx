@@ -207,7 +207,7 @@ export default function HomePage() {
                   boxShadow: '0 0 6px rgba(6,182,212,0.6)',
                 }}
               />
-              ICC 大赛 · AI 创新辅导
+              ICC 大赛 · AI 陪你创新
             </div>
 
           {/* Headline */}
@@ -223,8 +223,7 @@ export default function HomePage() {
                 animation: 'fadeInUp 0.5s ease-out 0.08s both',
               }}
             >
-              用 AI 引导
-              <br />
+              用 AI 陪你一起<br />
               <span
                 style={{
                   background: 'linear-gradient(135deg, #06b6d4, #3b82f6, #8b5cf6)',
@@ -248,9 +247,9 @@ export default function HomePage() {
                 animation: 'fadeInUp 0.5s ease-out 0.12s both',
               }}
             >
-              五阶段 AI 引导式辅导
+              5 个阶段，AI 一步一步陪你走
               <br />
-              从创意到交付，陪你完成 ICC 大赛项目
+              从想法到作品，陪你完成 ICC 大赛项目
             </p>
 
           {/* Stage indicators */}
@@ -363,7 +362,7 @@ export default function HomePage() {
                   textAlign: 'center',
                 }}
               >
-                输入昵称，立即开始
+                输入你的名字，马上开始
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>

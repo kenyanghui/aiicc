@@ -23,7 +23,7 @@ export default function WorkflowSidebar({ currentPhase, currentStep, onNavigate 
         <div className="text-[11px] uppercase tracking-[0.22em] text-slate-500">AIICC Studio</div>
         <h2 className="mt-2 text-lg sm:text-xl font-semibold tracking-tight text-white">项目工作流</h2>
         <p className="mt-1 text-xs leading-5 text-slate-400 hidden sm:block">
-          从发现到交付，沿着 5 个阶段逐步推进你的创新项目。
+          5 个阶段，一步一步完成你的创新项目。
         </p>
 
         <div className="mt-5 rounded-3xl border border-white/[0.06] bg-white/[0.03] p-4">

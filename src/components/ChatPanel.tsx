@@ -89,17 +89,17 @@ export default function ChatPanel({ phase, step, aiRole, studentName, projectId 
               <div className="flex items-center gap-2">
                 <span className="text-base font-medium text-white">{roleMeta.label}</span>
                 <span className="rounded-full border border-white/[0.08] px-2 py-0.5 text-[10px] uppercase tracking-[0.16em] text-slate-400">
-                  AI Coach
+                  AI 伙伴
                 </span>
               </div>
               <p className="mt-1 text-xs text-slate-400">
-                第 {phase} 阶段 · 第 {step} 步，围绕当前问题继续追问和收敛
+                第 {phase} 阶段 · 第 {step} 步，跟着我的引导一步一步来
               </p>
             </div>
           </div>
 
           <div className="hidden sm:block rounded-2xl border border-white/[0.06] bg-black/20 px-3 py-2 text-right">
-            <div className="text-[10px] uppercase tracking-[0.16em] text-slate-500">当前对象</div>
+            <div className="text-[10px] uppercase tracking-[0.16em] text-slate-500">同学</div>
             <div className="mt-1 text-sm text-slate-200">{studentName}</div>
           </div>
         </div>
@@ -152,7 +152,7 @@ export default function ChatPanel({ phase, step, aiRole, studentName, projectId 
       {/* 输入区 */}
       <div className="border-t border-white/[0.06] bg-black/10 p-3 sm:p-4">
         <div className="mb-2 sm:mb-3 flex items-center justify-between text-[11px] sm:text-xs text-slate-500">
-          <span className="truncate">直接输入想法、困惑或草稿</span>
+          <span className="truncate">把你的想法写下来～</span>
           <span className="shrink-0">{loading ? 'AI 正在思考...' : 'Enter 发送'}</span>
         </div>
         <div className="flex gap-2">

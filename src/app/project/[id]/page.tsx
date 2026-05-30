@@ -84,10 +84,10 @@ export default function ProjectPage() {
 
   const roleMeta = AIRoleMeta[step.aiRole];
   const outputMeta = step.outputType === 'text'
-    ? { label: '文字推演', icon: '📝', hint: '通过对话逐步沉淀问题、判断和结论。' }
+    ? { label: '写下来', icon: '📝', hint: '通过对话把你的想法一点点写清楚。' }
     : step.outputType === 'canvas'
-      ? { label: '画布梳理', icon: '🎨', hint: '适合结构化整理价值主张和关键假设。' }
-      : { label: '清单输出', icon: '📋', hint: '适合生成要点、待办和验证条目。' };
+      ? { label: '画个图', icon: '🎨', hint: '用画画的方式整理你的思路。' }
+      : { label: '列清单', icon: '📋', hint: '把要点一条条列出来，清清楚楚。' };
 
   return (
     <div className="min-h-screen overflow-hidden bg-[#07070d] text-white">
@@ -157,9 +157,9 @@ export default function ProjectPage() {
 
                 <div>
                   <div className="mb-2 flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-slate-500">
-                    <span>项目工作流台</span>
+                    <span>项目工作台</span>
                     <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-2 py-1 text-cyan-300">
-                      Phase {phase.id}
+                      阶段 {phase.id}
                     </span>
                   </div>
                   <h1 className="text-xl sm:text-3xl font-semibold tracking-tight text-white">
@@ -173,7 +173,7 @@ export default function ProjectPage() {
 
               <div className="grid min-w-[280px] gap-3 sm:grid-cols-2">
                 <div className="rounded-2xl border border-white/[0.06] bg-white/[0.04] px-4 py-3">
-                  <div className="text-[11px] uppercase tracking-[0.16em] text-slate-500">整体推进</div>
+                  <div className="text-[11px] uppercase tracking-[0.16em] text-slate-500">总进度</div>
                   <div className="mt-2 flex items-end justify-between">
                     <div>
                       <div className="text-2xl font-semibold text-white">{overallPercent}%</div>
@@ -189,7 +189,7 @@ export default function ProjectPage() {
                 </div>
 
                 <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-br from-cyan-500/12 to-blue-500/10 px-4 py-3">
-                  <div className="text-[11px] uppercase tracking-[0.16em] text-cyan-200/70">当前引导</div>
+                  <div className="text-[11px] uppercase tracking-[0.16em] text-cyan-200/70">AI 伙伴</div>
                   <div className="mt-2 flex items-center gap-3">
                     <div
                       className="flex h-11 w-11 items-center justify-center rounded-2xl text-lg"
@@ -199,7 +199,7 @@ export default function ProjectPage() {
                     </div>
                     <div>
                       <div className="text-sm font-medium text-white">{roleMeta.label}</div>
-                      <div className="text-xs text-slate-300">正在陪你完成这一小步</div>
+                      <div className="text-xs text-slate-300">陪你完成这一步</div>
                     </div>
                   </div>
                 </div>
@@ -221,7 +221,7 @@ export default function ProjectPage() {
                   </div>
                   <h2 className="text-xl font-semibold text-white">{step.title}</h2>
                   <p className="mt-3 text-sm leading-7 text-slate-300">
-                    先围绕这一步把想法说清楚，再进入下一步。你不需要一次说完整，先抛出一个最直觉的答案就够了。
+                    先把这一步的想法说出来，再进入下一步。不用一次说完，想到什么就先写下来。
                   </p>
                 </div>
 
@@ -229,7 +229,7 @@ export default function ProjectPage() {
                   <div className="mb-4 flex items-center justify-between">
                     <div>
                       <div className="text-sm font-medium text-white">进度总览</div>
-                      <div className="text-xs text-slate-500">随时知道自己现在走到哪一步</div>
+                      <div className="text-xs text-slate-500">看看自己走到哪了</div>
                     </div>
                     <span className="rounded-full bg-white/[0.06] px-3 py-1 text-xs text-slate-300">
                       {completedSteps}/{totalStepsCount}
@@ -240,7 +240,7 @@ export default function ProjectPage() {
 
                 <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
                   <div className="rounded-3xl border border-white/[0.06] bg-white/[0.03] p-5">
-                    <div className="mb-3 text-[11px] uppercase tracking-[0.18em] text-slate-500">本步角色</div>
+                    <div className="mb-3 text-[11px] uppercase tracking-[0.18em] text-slate-500">AI 角色</div>
                     <div className="flex items-center gap-3">
                       <div
                         className="flex h-12 w-12 items-center justify-center rounded-2xl text-xl"
@@ -251,14 +251,14 @@ export default function ProjectPage() {
                       <div>
                         <div className="font-medium text-white">{roleMeta.label}</div>
                         <div className="text-xs text-slate-400">
-                          用 {roleMeta.label} 的视角帮你思考问题
+                          让 {roleMeta.label} 陪你一起思考
                         </div>
                       </div>
                     </div>
                   </div>
 
                   <div className="rounded-3xl border border-white/[0.06] bg-white/[0.03] p-5">
-                    <div className="mb-3 text-[11px] uppercase tracking-[0.18em] text-slate-500">建议产出</div>
+                    <div className="mb-3 text-[11px] uppercase tracking-[0.18em] text-slate-500">建议成果</div>
                     <div className="flex items-center gap-3">
                       <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/[0.06] text-xl">
                         {outputMeta.icon}
