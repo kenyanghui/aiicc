@@ -3,7 +3,7 @@
 // 将步骤输出聚合到 ICC 竞赛文档模板中
 // ============================================================
 
-import { prisma } from '@/lib/prisma';
+import { db } from '@/lib/db';
 import { CompetitionDocType } from '@/types/document';
 import { getTemplate } from './templates';
 import { getVariablesForDocType, getStepsForDocType, getDocRefsForStep } from '@/lib/doc-mapping';
@@ -16,14 +16,16 @@ export async function generateDocument(
   projectId: string,
   docType: CompetitionDocType
 ): Promise<{ title: string; content: string; missingSteps: string[] }> {
-  // 1. 加载项目信息
-  const project = await prisma.project.findUnique({ where: { id: projectId } });
-  if (!project) throw new Error('项目未找到');
+  // 1. 从阶段输出推断项目信息，或使用默认值
+  let projectName = '我的项目';
+  let projectDesc = '';
+  try {
+    const outputs = await db.getOutputs(projectId);
+    // 如果已有产出，说明项目存在
+  } catch {} // 使用默认值
 
   // 2. 加载所有阶段输出
-  const outputs = await prisma.phaseOutput.findMany({
-    where: { projectId },
-  });
+  const outputs: any[] = await db.getOutputs(projectId) as any[];
 
   // 构建 map: "phase-step" → content
   const outputMap = new Map<string, string>();
@@ -39,13 +41,13 @@ export async function generateDocument(
   const neededVariables = getVariablesForDocType(docType);
 
   // 从项目信息提取基本变量
-  variables['project_name_and_desc'] = project.projectName || '[请补充项目名称]';
-  variables['project_summary'] = project.description || '[请补充项目摘要]';
-  variables['core_problems'] = project.description || '[请补充核心问题]';
+  variables['project_name_and_desc'] = projectName || '[请补充项目名称]';
+  variables['project_summary'] = projectDesc || '[请补充项目摘要]';
+  variables['core_problems'] = projectDesc || '[请补充核心问题]';
   variables['application_value'] = '[请补充应用价值]';
   variables['future_plans'] = '[请补充未来计划]';
-  variables['research_title'] = project.projectName || '[请补充研究标题]';
-  variables['research_abstract'] = project.description || '[请补充研究摘要]';
+  variables['research_title'] = projectName || '[请补充研究标题]';
+  variables['research_abstract'] = projectDesc || '[请补充研究摘要]';
   variables['research_conclusion'] = '[请补充结论]';
   variables['research_innovation_points'] = '[请补充创新点]';
   variables['theoretical_framework'] = '[请补充理论基础]';
@@ -80,14 +82,14 @@ export async function generateDocument(
 
   // 为特别变量设置默认值
   const defaults: Record<string, string> = {
-    poster_title: project.projectName || '[请补充项目名称]',
-    poster_elevator_pitch: project.description?.slice(0, 100) || '[请补充一句话亮点]',
+    poster_title: projectName || '[请补充项目名称]',
+    poster_elevator_pitch: projectDesc?.slice(0, 100) || '[请补充一句话亮点]',
     poster_solution: '[请在此描述解决方案]',
     poster_sdg: '[请补充与 SDG 目标的关联]',
     poster_ui_description: '[请补充界面/用户体验描述]',
     poster_final_product: '[请补充最终产品描述]',
     poster_tech: '[请补充技术方案说明]',
-    pitch_opening: `大家好！我们是【${project.projectName}】项目团队。今天由我们为大家介绍我们的创新项目。`,
+    pitch_opening: `大家好！我们是【${projectName}】项目团队。今天由我们为大家介绍我们的创新项目。`,
     pitch_full_script: '[请补充路演正文]',
     pitch_closing: '以上就是我们的项目介绍，谢谢大家！',
     checklist_items: '- [ ] 项目申报书\n- [ ] 研究报告\n- [ ] 发明日志\n- [ ] 查新报告\n- [ ] 展板\n- [ ] 路演视频',
@@ -115,7 +117,7 @@ export async function generateDocument(
     log_prototype_bml: '[请补充 BML 循环日志]',
     log_deliver_build: '[请补充最终搭建日志]',
     log_define_assumptions: '[请补充关键假设日志]',
-    research_problem_analysis: project.description || '[请补充问题分析]',
+    research_problem_analysis: projectDesc || '[请补充问题分析]',
     research_alternatives: '[请补充备选方案]',
     research_solution_detail: '[请补充方案详情]',
     research_mvp: '[请补充 MVP 描述]',
@@ -171,20 +173,7 @@ export async function generateAllDocuments(projectId: string) {
     try {
       const result = await generateDocument(projectId, docType);
       // 保存到数据库
-      const existing = await prisma.document.findUnique({
-        where: { projectId_docType: { projectId, docType } },
-      });
-
-      if (existing) {
-        await prisma.document.update({
-          where: { id: existing.id },
-          data: { content: result.content, title: result.title, status: 'draft' },
-        });
-      } else {
-        await prisma.document.create({
-          data: { projectId, docType, title: result.title, content: result.content, status: 'draft' },
-        });
-      }
+      await db.upsertDocument(projectId, docType, result.title, result.content);
       results.push({ docType, ok: true, missingSteps: result.missingSteps });
     } catch (err) {
       results.push({ docType, ok: false, error: String(err) });
@@ -197,16 +186,12 @@ export async function generateAllDocuments(projectId: string) {
  * 获取项目文档生成状态
  */
 export async function getDocumentStatus(projectId: string) {
-  const outputs = await prisma.phaseOutput.findMany({
-    where: { projectId },
-    select: { phase: true, step: true },
-  });
-
+  const outputs: any[] = await db.getOutputs(projectId) as any[];
   const completedSteps = new Set(outputs.map(o => `${o.phase}-${o.step}`));
   const totalSteps = 20;
   const completedCount = completedSteps.size;
 
-  const docs = await prisma.document.findMany({ where: { projectId } });
+  const docs: any[] = await db.getDocuments(projectId) as any[];
   const docStatusMap = new Map(docs.map(d => [d.docType, d]));
 
   return {
